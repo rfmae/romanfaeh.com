@@ -24,5 +24,13 @@ pnpm-debug.log*
 .idea/
 
 # pagefind
-
 public/pagefind
+
+# editor temp files
+.vscode/
+*.swp
+*.swo
+*~
+
+# local deployment / tooling
+.vercel/
