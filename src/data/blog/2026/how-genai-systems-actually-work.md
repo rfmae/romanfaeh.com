@@ -1,16 +1,14 @@
 ---
-author: Roman Faeh
-pubDatetime: 2026-03-25T23:15:00Z
 title: "How GenAI Systems Actually Work: The Security-Relevant Architecture"
-featured: true
+description: "Why security reviews improve when they treat the model as part of a larger system."
+pubDatetime: 2026-03-25T23:15:00Z
 draft: false
 tags:
   - llm
   - security
   - agents
-  - ai systems
-description:
-  Why security reviews improve when they treat the model as part of a larger system.
+  - ai
+  - rag
 ---
 
 **Why security reviews improve when they treat the model as part of a larger system**
@@ -59,35 +57,27 @@ That is why the surrounding system matters so much. Models become security-relev
 
 One reason GenAI discussions get muddy is that different system patterns are often grouped together as if they were basically the same thing. They are not.
 
-![LLM vs. RAG vs. Agent](@/assets/images/diagram-llm-vs-rag-vs-agent.png)
-
-<figure>
-  <img src="/assets/images/diagram-llm-vs-rag-vs-agent.png" />
-  <figcaption>
-    <strong>Diagram 2 — Basic LLM App vs RAG System vs Agent.</strong>
-    These patterns are not interchangeable. A basic LLM app generates output, RAG adds external context, and an agent runs tools in a loop to achieve a goal.
-  </figcaption>
-</figure>
+![Basic LLM](@/assets/images/2026/how-ai-systems-actually-work/basic-llm-nb.png)
 
 A basic LLM application is still mostly text in, text out. The application assembles context, sends it to a model, and returns the result. If the model cannot influence anything beyond its own reply, the security consequences are comparatively contained. That does not make the system safe, but it does keep the risk closer to content generation than to systems control.
 
+![RAG System](@/assets/images/2026/how-ai-systems-actually-work/rag-system-nb.png)
+
 A RAG system adds retrieval. Now the model is no longer working only from prompt context. The application [retrieves documents, snippets, or records from some external corpus](https://www.pinecone.io/learn/retrieval-augmented-generation/) and includes them in the model input. That changes what the model can **see**. At that point, the important questions shift toward provenance, corpus quality, indexing, retrieval scope, metadata, and whether retrieved material is being treated as more trustworthy than it deserves. Retrieval improves context; it does not automatically create trust.
+
+![LLM Agent](@/assets/images/2026/how-ai-systems-actually-work/llm-agent-nb.png)
 
 An agent goes further still. A practical definition is that [an LLM agent runs tools in a loop to achieve a goal](https://simonwillison.net/2025/Sep/18/agents/). The model selects tools, receives results, and continues until it completes or fails. That changes what the model can **do**. And that is where the threat model changes materially. A tool-using system may be able to query internal systems, create tickets, send messages, update records, call APIs, or trigger workflows. That is not simply a chatbot with extra convenience features. It is a different class of system with a different authority model.
 
-This distinction is worth keeping in mind because it clarifies a lot of later security work. Retrieval changes what the model can see. Agents change what the model can do.
+This distinction is worth keeping in mind because it clarifies a lot of later security work. 
+
+> Retrieval changes what the model can see. Agents change what the model can do.
 
 ## Context paths and action paths
 
 One of the most useful ways to think about these systems is to separate two paths: the path that shapes the model’s context, and the path that turns model output into system effects.
 
-<figure class="my-8">
-  <img src="/diagrams/diagram-security-relevant-anatomy.png" alt="Security-Relevant Anatomy of a GenAI System" />
-  <figcaption class="mt-3 text-xs leading-5 text-zinc-500">
-    <strong>Diagram 1 — Security-Relevant Anatomy of a GenAI System.</strong>
-    A GenAI system has two security-relevant paths: the context path, which shapes what the model sees, and the action path, which determines what model output can influence.
-  </figcaption>
-</figure>
+![Security-Relevant Anatomy of a GenAI System](@/assets/images/2026/how-ai-systems-actually-work/security-relevant-anatomy.png)
 
 The **context path** determines what reaches the model. That includes user input, uploaded files, retrieved documents, conversation history, memory, hidden system instructions, and in some cases tool outputs that get fed back into the loop. This path matters because the model reasons over whatever reaches it, whether that information deserves trust or not.
 
@@ -138,6 +128,5 @@ The real story is the architecture around it:
 - where hard controls live
 - and what happens next when the model is wrong
 
-The model generates text.
+> The model generates text. The architecture decides wheter that text matters.
 
-**The architecture decides whether that text matters.**
