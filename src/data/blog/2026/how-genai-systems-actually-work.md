@@ -69,7 +69,7 @@ A RAG system adds retrieval. Now the model is no longer working only from prompt
 
 An agent goes further still. A practical definition is that [an LLM agent runs tools in a loop to achieve a goal](https://simonwillison.net/2025/Sep/18/agents/). The model selects tools, receives results, and continues until it completes or fails. That changes what the model can **do**. And that is where the threat model changes materially. A tool-using system may be able to query internal systems, create tickets, send messages, update records, call APIs, or trigger workflows. That is not simply a chatbot with extra convenience features. It is a different class of system with a different authority model.
 
-This distinction is worth keeping in mind because it clarifies a lot of later security work. 
+This distinction is worth keeping in mind because it clarifies a lot of later security work.
 
 > Retrieval changes what the model can see. Agents change what the model can do.
 
@@ -122,6 +122,7 @@ Once the system is visible, the later security work becomes much easier. Trust b
 The most useful thing to understand about GenAI security is that the model is rarely the whole story.
 
 The real story is the architecture around it:
+
 - what reaches the model
 - what the model can influence
 - what gets treated as trusted
@@ -129,4 +130,3 @@ The real story is the architecture around it:
 - and what happens next when the model is wrong
 
 > The model generates text. The architecture decides wheter that text matters.
-
