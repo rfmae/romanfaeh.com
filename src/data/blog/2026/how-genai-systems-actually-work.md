@@ -15,7 +15,7 @@ tags:
 
 Most AI security reviews begin with the model.
 
-That is understandable. The model is the strange part, the probabilistic part, the part everyone points at and calls “AI.” It can hallucinate, follow instructions in surprising ways, and behave just inconsistently enough to make any security practitioner suspicious on sight.
+That is understandable. The model is the strange part, the probabilistic part, the part everyone points at and calls “AI”. It can hallucinate, follow instructions in surprising ways, and behave just inconsistently enough to make any security practitioner suspicious on sight.
 
 But in most real systems, the model is not the whole story. It sits inside a larger architecture that determines what reaches it, what context gets added, what it can influence, and what still prevents damage when it is wrong.
 
@@ -47,9 +47,9 @@ Real GenAI applications nearly always involve more than a prompt and a response.
 
 Once those pieces are visible, the review target changes. You are no longer looking at a model in isolation. You are looking at a system that combines inputs with different trust levels, translates language into decisions, and sometimes connects probabilistic output to real actions.
 
-That broader view is what makes later security analysis much clearer.
+Once you see the surrounding system clearly, the real security questions become much easier to ask.
 
-It also leads to a better mental model. The model does produce language, and model behavior matters. But the architecture determines whether that language remains a harmless answer, becomes trusted context for the next step, or turns into something that can influence workflows, systems, and state.
+The model produces language. The architecture decides whether that language stays a response or influences what the system does next.
 
 That is why the surrounding system matters so much. Models become security-relevant not only because they generate text, but because they are connected to data, tools, and control points in ways that shape what happens next.
 
@@ -81,9 +81,9 @@ One of the most useful ways to think about these systems is to separate two path
 
 The **context path** determines what reaches the model. That includes user input, uploaded files, retrieved documents, conversation history, memory, hidden system instructions, and in some cases tool outputs that get fed back into the loop. This path matters because the model reasons over whatever reaches it, whether that information deserves trust or not.
 
-The **action path** determines what the model can influence once it has produced output. That may include tool calls, parameter selection, workflow triggering, downstream system actions, or changes to persistent state. Once that path exists, the system is no longer just a language interface. It becomes an authority-shaping interface.
+The **action path** determines what the model can influence once it has produced output. That may include tool calls, parameter selection, workflow triggering, downstream system actions, or changes to persistent state. Once that path exists, the system is no longer just producing text. It can begin to affect real decisions and actions.
 
-These paths are related, but they are not the same. And that distinction makes security reviews much more effective. If the context path is weak, the model may reason from untrusted or misleading material. If the action path is weak, even an ordinary model mistake can become a meaningful system effect. That is the point where content risk turns into systems risk.
+These paths are related, but they are not the same. And that distinction makes security reviews much more effective. If the context path is weak, the model may reason from untrusted or misleading material. If the action path is weak, even an ordinary model mistake can start to affect real decisions and actions. That is the point where content risk turns into systems risk.
 
 ## The review questions that matter
 
@@ -91,7 +91,7 @@ When a team is building or reviewing a GenAI system, a few questions can clarify
 
 Where does untrusted input enter the system? What context is treated as trusted, and why? What can the model influence directly, and what can it influence indirectly through another service, workflow, or human decision? Where is authorization actually enforced? And what still prevents damage when the model is wrong in a completely ordinary way?
 
-These are useful questions because they anchor the conversation in the system rather than in the marketing category of “AI.” If the answers are fuzzy, the architecture understanding is probably fuzzy too. And if the architecture understanding is fuzzy, the security claims around the system are usually weaker than they sound.
+These are useful questions because they anchor the conversation in the system rather than in the marketing category of “AI”. If the answers are fuzzy, the architecture understanding is probably fuzzy too. And if the architecture understanding is fuzzy, the security claims around the system are usually weaker than they sound.
 
 ## Why this changes security reviews
 
@@ -99,7 +99,7 @@ Once you adopt the architecture lens, several things become easier to see.
 
 Prompts stop looking like hard security boundaries. They are still important, but they are instructions, not deterministic enforcement points. Retrieval starts to look less like a generic “AI capability” and more like a new data path with trust and scoping consequences. Tool use stops looking like a product feature and starts looking like delegated influence over systems and actions.
 
-That shift also makes control selection more realistic. It becomes easier to see why prompt wording alone cannot carry the full burden of policy, why internal data is not automatically trustworthy, and why logging is not the same thing as containment. The architecture does not solve every problem, but it makes the actual problem visible.
+That shift makes it easier to choose controls that actually match the problem. It also clarifies why prompt wording alone cannot carry the full burden of policy, why internal data is not automatically trustworthy, and why logging is not the same thing as containment. The architecture does not remove the risk, but it does show you where the risk really lives.
 
 For security practitioners, that is the practical value of this model. It gives you a cleaner way to apply instincts you already have — around trust boundaries, control placement, data flow, authorization, and blast radius — to a class of systems that often feels unfamiliar at first.
 
@@ -115,7 +115,7 @@ Then push the conversation one step further. Which inputs are untrusted? Which a
 
 A team that cannot draw this clearly probably does not understand its system clearly enough yet. That is not a failure. It is a useful signal. The right move is to slow the review down, map the architecture honestly, and only then start talking about threats and controls.
 
-Once the system is visible, the later security work becomes much easier. Trust boundaries are easier to identify. Control placement becomes more obvious. Retrieval can be reviewed as a data-path problem. Tool use can be reviewed as an authority problem. “AI risk” becomes something much more concrete and much more familiar.
+Once the system is visible, the later security work becomes much easier. Trust boundaries are easier to identify. Control placement becomes more obvious. Retrieval can be reviewed as a data-path problem. Tool use becomes much easier to review once you ask what the model can trigger and what those triggers are allowed to reach. “AI risk” starts to look less mysterious and more like a system design problem.
 
 ## Closing takeaway
 
@@ -125,8 +125,8 @@ The real story is the architecture around it:
 
 - what reaches the model
 - what the model can influence
-- what gets treated as trusted
+- what the system treats as trusted
 - where hard controls live
 - and what happens next when the model is wrong
 
-> The model generates text. The architecture decides wheter that text matters.
+> The model generates text. The architecture decides whether that text matters.
