@@ -4,7 +4,7 @@ This is the source code for my personal website, built with [Astro](https://astr
 
 ## About
 
-I'm Roman Faeh, a security engineer based in Switzerland. This site is my personal home on the web — a place for writing, notes, and blog posts about security, AI, LLM systems, and practical engineering.
+I'm Roman, a security engineer based in Switzerland. This site is my personal home on the web — a place for writing, notes, and blog posts about security, AI, LLM systems, and practical engineering.
 
 ## Project Structure
 
@@ -62,7 +62,6 @@ The site currently includes:
 - archives
 - RSS feed
 - search
-- generated OG images
 
 ## Deployment
 
