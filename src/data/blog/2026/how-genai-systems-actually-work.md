@@ -11,8 +11,6 @@ tags:
   - rag
 ---
 
-**Why security reviews improve when they treat the model as part of a larger system**
-
 Most AI security reviews begin with the model.
 
 That is understandable. The model is the strange part, the probabilistic part, the part everyone points at and calls “AI”. It can hallucinate, follow instructions in surprising ways, and behave just inconsistently enough to make any security practitioner suspicious on sight.
@@ -75,7 +73,7 @@ This distinction is worth keeping in mind because it clarifies a lot of later se
 
 ## Context paths and action paths
 
-One of the most useful ways to think about these systems is to separate two paths: the path that shapes the model’s context, and the path that turns model output into system effects.
+One of the most useful ways to think about these systems is to separate two paths: the path that shapes the model’s context, and the path that turns model output into real-world consequence.
 
 ![Security-Relevant Anatomy of a GenAI System](@/assets/images/2026/how-ai-systems-actually-work/security-relevant-anatomy.png)
 
@@ -107,7 +105,7 @@ For security practitioners, that is the practical value of this model. It gives 
 
 Before threat-modeling any AI feature, ask the team to draw the system on one page.
 
-Not a vague box labeled “AI.” An actual architecture view.
+Not a vague box labeled “AI". An actual architecture view.
 
 At minimum, the diagram should show what enters the model, what extra context can be added, whether retrieval exists, whether memory persists, whether tools exist, which downstream systems can be influenced, and where deterministic controls live outside the model.
 
