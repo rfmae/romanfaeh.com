@@ -1,7 +1,7 @@
 ---
 title: "How Retrieval Shapes Model Context"
 description: "Emeddings, vector search, and the mechanics behind RAG."
-pubDatetime: 2026-04-06T22:30:00Z
+pubDatetime: 2026-04-06T21:30:00Z
 draft: false
 tags:
   - llm
