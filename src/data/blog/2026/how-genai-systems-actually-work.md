@@ -2,7 +2,7 @@
 title: "How GenAI Systems Actually Work"
 description: "The architecture that matters for security review."
 pubDatetime: 2026-03-25T20:40:00Z
-draft: true
+draft: false
 tags:
   - llm
   - security

@@ -2,7 +2,7 @@
 title: "What the Model Actually Sees"
 description: "How prompts, instructions, retrieval, and memory become one context window."
 pubDatetime: 2026-04-07T20:56:00Z
-draft: true
+draft: false
 tags:
   - llm
   - security
