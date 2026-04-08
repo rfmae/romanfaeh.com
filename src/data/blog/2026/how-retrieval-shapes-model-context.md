@@ -1,7 +1,7 @@
 ---
 title: "How Retrieval Shapes Model Context"
-description: "Embeddings, vector search, and the mechanics behind RAG."
-pubDatetime: 2026-04-07T20:57:00Z
+description: "Embeddings, chunking, vector search, and the mechanics behind RAG."
+pubDatetime: 2026-04-08T16:54:00Z
 draft: false
 tags:
   - llm
@@ -10,63 +10,91 @@ tags:
   - retrieval
 ---
 
-> **tl;dr:** Retrieval changes what reaches the model. Documents are chunked, embedded, retrieved, and inserted into context at runtime. That makes retrieval a context system, not just a search feature.
+> **tl;dr:** Retrieval changes what reaches the model. Documents are split into chunks, turned into embeddings, retrieved at runtime, and inserted into the context window. That makes retrieval a context system, not just a search feature.
 
-After the first two foundation posts, the next useful layer is retrieval.
+The next useful layer is retrieval.
 
-[RAG (Retrieval-Augmented Generation)](https://www.pinecone.io/learn/retrieval-augmented-generation/) becomes much easier to reason about once you see it as a retrieval system feeding context into the model. The model does not change each time you add a document to a corpus. What changes is the text the application selects and places in front of it.
+[RAG (Retrieval-Augmented Generation)](https://www.pinecone.io/learn/retrieval-augmented-generation/) becomes much easier to reason about once you stop thinking of it as the model “knowing” external documents. The model does not change when you add files to a corpus. What changes is the text the application selects and places in front of it.
 
-That is the central idea for this post. **Retrieval shapes what the model can see.** Once that is clear, embeddings, vector search, and RAG architecture stop feeling mysterious and start looking like normal systems you can inspect.
+That is the central idea for this post: **retrieval shapes what the model can see.** Once that is clear, the mechanics of RAG look much less mysterious.
 
 ## Retrieval is a context system
 
 Retrieval gives the application a way to bring external text into the model context at runtime.
 
-Instead of relying only on system instructions, user input, and prior turns, the application can search a corpus, select relevant chunks, and append them to the model input. The model then answers with that additional text in view.
+The application searches a corpus, selects relevant text, and appends it to the model input. Retrieval does not update the model’s weights. It changes the context the model receives for this request.
 
-That is much easier to reason about than the vague idea that the model somehow “knows” the documents.
+The high-level flow is simple:
 
-The practical flow is straightforward. Documents are split into smaller pieces before being embedded. Those embeddings are stored in a vector database so they can be searched later. At query time, the system compares a query representation against the stored corpus, retrieves relevant chunks, and inserts the retrieved text into the model context.
+1. **Ingestion:** documents are prepared for retrieval
+2. **Ingestion:** the system stores searchable representations of them
+3. **Retrieval:** a user query arrives
+4. **Retrieval:** relevant text is retrieved
+5. **Generation:** that text is added to the model context
+6. **Generation:** the model answers with that context in view
 
 ![RAG retrieval pipeline](@/assets/images/2026/how-retrieval-shapes-model-context/rag-retrieval-pipeline.png)
 
 **Retrieval is not model memory in the human sense. It is context selection.**
 
-## What embeddings make possible
+## Why documents are split into chunks
 
-[Embeddings](https://platform.openai.com/docs/guides/embeddings) give the system a way to represent text so similarity comparisons become possible.
+Most documents are too large to retrieve as one unit, so retrieval systems usually split them into smaller pieces called **chunks**.
 
-An embedding model maps text into a high-dimensional vector space. You can think of that as placing pieces of text in a space where nearby items are more similar, in some learned sense, than distant ones.
+A chunk is a smaller section of a larger document that can be stored, compared, and retrieved on its own. It becomes the basic retrieval unit.
 
-That gives the application a way to compare texts without relying only on exact keyword matches. A query does not need to match a document word for word for the system to retrieve something relevant.
+This matters because chunk quality affects retrieval quality. If chunks are too large, retrieval brings in extra noise. If they are too small, the system may retrieve fragments without enough context.
 
-> The important point is that embeddings help the system compare texts. They do not certify truth, guarantee relevance, or replace judgment about what should be trusted.
+## What embeddings do
 
-## Vector search ranks nearby neighbors
+Once text has been chunked, the system needs a way to compare one chunk to another and compare a user query to those chunks.
 
-Once text has been embedded, the system can search for nearby vectors. A query gets embedded, the system compares that query vector to stored chunk vectors, and then returns the nearest neighbors.
+Keyword matching only gets you so far. A user may ask about “getting locked out of an account,” while the document says “account recovery” or “credential reset.” The words differ, but the meaning may still be close.
 
-At scale, this usually relies on [approximate nearest-neighbor techniques](https://www.pinecone.io/learn/series/faiss/vector-indexes/) rather than exact search. That trades some recall for a large gain in speed.
+That is where **embeddings** help.
+
+An embedding is a numerical representation of text that helps the system compare meaning, not just exact wording. Similar pieces of text tend to end up closer together than unrelated ones.
+
+Under the hood, this is usually described as a high-dimensional vector space. The practical point is simpler: embeddings make semantic similarity searchable, so the system can retrieve related text even when the query does not match the source word for word.
+
+> Embeddings help the system compare texts. They do not certify truth, guarantee relevance, or decide what should be trusted.
+
+## What vector search does
+
+Once chunks have embeddings, the system can search for nearby vectors.
+
+A query is embedded the same way. The system then compares that query representation to the stored chunk representations and returns the nearest matches.
+
+At scale, this usually relies on [approximate nearest-neighbor techniques](https://www.pinecone.io/learn/series/faiss/vector-indexes/) rather than exact search. That is mostly a performance tradeoff: a little less precision in exchange for much faster retrieval.
 
 **Vector search is best understood as a ranking system.**
 
-It helps the application retrieve plausible neighbors under the representation and search method it is using. That is useful, but it is still a selection process, not a verification process.
+It returns likely neighbors under the representation and search method the system is using. That is useful, but it is not the same as verification.
 
-That is why retrieved results can feel more authoritative than they deserve. A chunk can be similar enough to get retrieved and still be stale, incomplete, misleading, or risky in context.
+A retrieved chunk can be similar enough to rank highly and still be stale, incomplete, misleading, or risky in context.
 
 ## Why retrieval deserves security review
 
-Once an application adds retrieval, it creates a new path into the model context. The quality of the answer now depends not only on model behavior, but also on what content was indexed, how it was chunked, what metadata survived ingestion, how the query was formed, how retrieval was filtered and ranked, and what got inserted into context.
+Once an application adds retrieval, it creates a new path into the model context.
+
+Now the answer depends not only on model behavior, but also on:
+
+- what content was indexed
+- how it was chunked
+- what metadata was attached or lost
+- how the query was formed
+- how retrieval was filtered and ranked
+- what text was finally inserted into context
 
 **Retrieval is not only a relevance feature. It is a system component that fundamentally changes what reaches the model.**
 
-That also means retrieval quality becomes a security concern.
+That also makes retrieval quality a security concern.
 
-If the corpus contains poisoned content, retrieval can surface it directly into context. If it contains stale instructions, retrieval can surface those. If tenant boundaries are weak, retrieval can expose the wrong tenant’s content. If metadata filters are weak, retrieval can broaden exposure without looking dramatic.
+If the corpus contains poisoned content, retrieval can surface it directly into context. If it contains stale instructions, retrieval can surface those too. If tenant boundaries are weak, retrieval can expose the wrong tenant’s data. If metadata filters are weak, retrieval can quietly broaden exposure.
 
-Because retrieved text often arrives looking useful and relevant, it is easy to trust it more than it deserves. The model does not need a dramatic jailbreak-style failure to produce a bad outcome. It may simply receive the wrong text, treat it as useful context, and produce an answer shaped by that mistake.
+The model does not need a dramatic jailbreak-style failure to produce a bad result. It may simply receive the wrong text, treat it as useful context, and generate an answer shaped by that mistake.
 
-This is why RAG security begins before runtime. The retrieval path inherits whatever problems were introduced during ingestion, chunking, metadata assignment, access-control design, and corpus maintenance.
+This is why RAG security starts before runtime. The retrieval path inherits whatever problems were introduced during ingestion, chunking, metadata assignment, access-control design, and corpus maintenance.
 
 ## What to review in a retrieval pipeline
 
@@ -80,10 +108,10 @@ If you are reviewing a retrieval system, follow the path end to end and ask:
 - What similarity threshold or ranking logic decides what gets returned?
 - How is retrieved text inserted into the final model context?
 
-Those questions tell you more than any promise that the system is “grounded in company data.”
+Those questions tell you more than any claim that the system is “grounded in company data.”
 
 ## Closing
 
-Retrieval gives the application a way to select useful external text and place it into model context. That is what makes RAG practical, and it is what makes the retrieval path worth reviewing carefully.
+RAG is useful because it lets the application bring external text into context at runtime. That is also why the retrieval path deserves careful review.
 
 > Vector search returns likely neighbors, not verified facts. Retrieval shapes context, and context shapes output.
