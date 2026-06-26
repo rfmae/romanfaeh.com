@@ -1,7 +1,7 @@
 ---
 title: "How Agent Loops Change Security: Trust Boundaries and Control Points"
 description: "How agent loops change AI security, introduce new trust boundaries, and require controls beyond the model itself."
-pubDatetime: 2026-06-26T23:30:00Z
+pubDatetime: 2026-06-26T22:30:00Z
 draft: false
 tags:
   - ai-security
