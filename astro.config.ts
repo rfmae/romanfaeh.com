@@ -28,7 +28,10 @@ export default defineConfig({
   ],
   markdown: {
     processor: unified({
-      remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
+      remarkPlugins: [
+        remarkToc,
+        [remarkCollapse, { test: "Table of contents" }],
+      ],
     }),
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes
@@ -44,7 +47,6 @@ export default defineConfig({
     },
   },
   vite: {
-     
     plugins: [tailwindcss()],
     optimizeDeps: {
       exclude: ["@resvg/resvg-js"],
