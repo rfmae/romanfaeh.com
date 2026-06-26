@@ -1,17 +1,14 @@
 ---
-
 title: "How Agent Loops Change Security: Trust Boundaries and Control Points"
 description: "How agent loops change AI security, introduce new trust boundaries, and require controls beyond the model itself."
 pubDatetime: 2026-06-27T00:30:00Z
 draft: false
 tags:
-
-- ai-security
-- agentic-ai
-- owasp
-- mitre-atlas
-- threat-modeling
-
+  - ai-security
+  - agentic-ai
+  - owasp
+  - mitre-atlas
+  - threat-modeling
 ---
 
 > **tl;dr:** Agent loops fundamentally change the security model. Because the system can choose actions, observe results, and continue across multiple steps, security is no longer just about model outputs—it is about controlling the entire execution loop.
@@ -58,7 +55,7 @@ The model is only one component of an agentic system. The runtime decides which 
 Even in a single-agent system, the security challenge is no longer limited to model output. The system has to control how that output influences actions, tool calls, and persisted state across multiple steps.
 
 ![Single-Agent Architecture](@/assets/images/2026/agent-loops-trust-boundaries-and-control-points/single-agent-architecture.png)
-*The single-agent architecture diagram is taken and adapted from the OWASP Agentic AI document.*
+_The single-agent architecture diagram is taken and adapted from the OWASP Agentic AI document._
 
 Multi-agent systems build on the same pattern, but introduce additional trust boundaries between agents.
 
@@ -81,7 +78,7 @@ Multi-agent security is not simply single-agent security repeated several times.
 Multi-agent systems do not just add more components. They create more opportunities for the same flaw to spread.
 
 ![Multi-Agent Architecture](@/assets/images/2026/agent-loops-trust-boundaries-and-control-points/multi-agent-architecture.png)
-*The multi-agent architecture diagram is taken and adapted from the OWASP Agentic AI document.*
+_The multi-agent architecture diagram is taken and adapted from the OWASP Agentic AI document._
 
 To understand where those risks arise, it helps to look at the trust boundaries within an agentic system.
 
