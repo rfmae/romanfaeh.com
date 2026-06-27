@@ -2,10 +2,12 @@
 title: "How GenAI Systems Actually Work"
 description: "The architecture that matters for security review."
 pubDatetime: 2026-03-25T20:40:00Z
+modDatetime: 2026-06-27T22:15:00Z
 draft: false
 tags:
-  - llm
-  - security
+  - genai
+  - ai-security
+  - architecture
   - rag
   - agents
 ---
@@ -16,13 +18,13 @@ Most AI security reviews begin with the model.
 
 That makes sense. The model is the unfamiliar part. It can hallucinate, follow instructions in surprising ways, and behave just inconsistently enough to make any security reviewer suspicious.
 
-But in most real systems, the model is not the whole story.
+But in most real systems, the model is only one component.
 
-It sits inside a larger application that decides what reaches it, what context gets added, what tools it can use, and what can happen after it produces output.
+It sits inside a larger application that decides what reaches it, what context gets added, what tools it can use, and what happens after it produces output.
 
-That is the more useful place to start.
+hat is the more useful place to start.
 
-Once you see GenAI systems that way, the security questions get much clearer. The question is no longer “is the model safe?” in the abstract. The question becomes: how is the system put together, where are the trust boundaries, and what can model output actually change?
+Viewed that way, the security questions become much clearer. The question is no longer "is the model safe?" in the abstract. The question becomes: how is the system put together, where are the trust boundaries, and what can model output actually change?
 
 ## Start with the system, not the model
 
@@ -34,7 +36,7 @@ From a security perspective, that summary leaves out the part that matters.
 
 The useful questions are about the architecture around the model. What data gets pulled into context? Which inputs are treated as trustworthy, and which are not? What can the assistant influence downstream? Where is authorization enforced? If the model is wrong in a completely ordinary way, what stops the rest of the system from following it?
 
-That is the shift that makes GenAI security easier to reason about.
+That shift in perspective makes GenAI security much easier to reason about.
 
 ## The architecture lens
 
@@ -44,13 +46,17 @@ A very common mental shortcut is to picture an AI system like this:
 
 That picture is simple. It is also too simple for most real applications.
 
-Real GenAI systems usually include an application layer that assembles context, hidden system instructions, retrieval, memory, tools, filtering logic, and downstream systems that may receive or act on model output.
+Real GenAI systems usually include an application layer.
 
-Once those pieces are visible, the review target changes. You are no longer looking at a model in isolation. You are looking at a system that combines inputs with different trust levels and sometimes connects probabilistic output to real actions.
+That layer assembles context, hidden system instructions, retrieval results, memory, tools, filtering logic, and connections to downstream systems that may receive or act on model output.
 
-That is why the surrounding system matters so much.
+Once those pieces are visible, the review target changes. You are no longer looking at a model in isolation. You are looking at a system that combines inputs with different trust levels and allows probabilistic model output to influence real actions.
 
-The model produces language. The architecture decides whether that language stays a response or influences what the system does next.
+The model produces language.
+
+The architecture decides whether that language stays a response or influences what the system does next.
+
+In practice, those surrounding systems tend to follow a few common architectural patterns.
 
 ## Three system patterns that matter
 
@@ -58,17 +64,15 @@ Different kinds of GenAI systems often get grouped together as if they were basi
 
 ![Basic LLM](@/assets/images/2026/how-ai-systems-actually-work/basic-llm-nb.png)
 
-A basic LLM application is still mostly text in, text out. The application assembles context, sends it to a model, and returns the result. If the model cannot influence anything beyond its own reply, the security consequences are more contained. That does not make the system safe, but it does keep the risk closer to content generation than to systems control.
+A basic LLM application is still primarily text in, text out. The application assembles context, sends it to a model, and returns the result. If the model cannot influence anything beyond its own reply, the security consequences are more contained. That does not make the system safe, but it does keep the risk closer to content generation than to systems control.
 
 ![RAG System](@/assets/images/2026/how-ai-systems-actually-work/rag-system-nb.png)
 
-A RAG system adds retrieval. The application [retrieves documents, snippets, or records from some external corpus](https://www.pinecone.io/learn/retrieval-augmented-generation/) and includes them in the model input. That changes what the model can **see**. Once retrieval exists, the important questions shift toward provenance, corpus quality, indexing, retrieval scope, metadata, and whether retrieved material is being treated as more trustworthy than it deserves.
+A RAG system adds retrieval. The application [retrieves documents, snippets, or records from some external corpus](https://www.pinecone.io/learn/retrieval-augmented-generation/) and includes them in the model input. That changes what the model can **see**. Once retrieval exists, the important questions shift toward provenance, corpus quality, retrieval scope, metadata, and whether retrieved material is being treated as more trustworthy than it deserves.
 
 ![LLM Agent](@/assets/images/2026/how-ai-systems-actually-work/llm-agent-nb.png)
 
-An agent goes further still. A practical definition is that [an LLM agent runs tools in a loop to achieve a goal](https://simonwillison.net/2025/Sep/18/agents/). The model selects tools, receives results, and continues until it completes or fails. That changes what the model can **do**. A tool-using system may be able to query internal systems, create tickets, send messages, update records, call APIs, or trigger workflows. That is not just a chatbot with extra convenience features. It is a different class of system with a different authority model.
-
-This distinction matters because it clarifies a lot of later security work.
+An agent goes further still. For the purpose of this article, it is useful to think of an [LLM agent as a system that runs tools in a loop to achieve a goal](https://simonwillison.net/2025/Sep/18/agents/). The model selects tools, receives results, and continues until it completes or fails. That changes what the model can **do**. A tool-using system may be able to query internal systems, create tickets, send messages, update records, call APIs, or trigger workflows. That is not just a chatbot with extra convenience features. It is a different class of system with a different authority model.
 
 > Retrieval changes what the model can see. Agents change what the model can do.
 
@@ -86,17 +90,21 @@ These paths are related, but they are not the same.
 
 That distinction makes security reviews much more effective. If the context path is weak, the model may reason from untrusted or misleading material. If the action path is weak, even an ordinary model mistake can start to affect real decisions and actions.
 
-That is the point where content risk turns into systems risk.
+That is where content risk can turn into systems risk.
 
 ## The questions that clarify the system
 
-A few questions can make the architecture visible very quickly.
+A few questions can make the architecture visible very quickly:
 
-Where does untrusted input enter the system? What context is treated as trusted, and why? What can the model influence directly, and what can it influence indirectly through another service, workflow, or human decision? Where is authorization actually enforced? And what still prevents damage when the model is wrong in a completely ordinary way?
+- Where does untrusted input enter the system?
+- What context is treated as trusted, and why?
+- What can the model influence directly? What can it influence indirectly through another service, workflow, or human decision?
+- Where is authorization actually enforced?
+- What still prevents damage when the model is wrong in a completely ordinary way?
 
 These questions matter because they keep the focus on the system instead of on the marketing category of “AI”.
 
-If the answers are fuzzy, the architecture understanding is probably fuzzy too. And if the architecture understanding is fuzzy, the security claims around the system are usually weaker than they sound.
+If those questions cannot be answered clearly, the architecture is probably not understood clearly either. And if the architecture is poorly understood, security claims about the system are usually weaker than they sound.
 
 ## Why this helps security review
 
@@ -104,7 +112,9 @@ Once you adopt the architecture lens, several things become easier to see.
 
 Prompts stop looking like hard security boundaries. Retrieval starts to look like a new data path with trust and scoping consequences. Tool use starts to look like delegated influence over systems and actions.
 
-That makes it easier to choose controls that actually match the problem. It also makes it easier to see why prompt wording alone cannot carry the full burden of policy, why internal data is not automatically trustworthy, and why logging is not the same thing as containment.
+That makes it easier to choose controls that actually match the problem.
+
+It also becomes clearer why prompt wording alone cannot carry the full burden of policy, why internal data is not automatically trustworthy, and why logging is not the same thing as containment.
 
 The architecture does not remove the risk, but it does show you where the risk really lives.
 
@@ -114,9 +124,23 @@ Before threat-modeling an AI feature, ask the team to draw the system on one pag
 
 Not a vague box labeled “AI”. An actual architecture view.
 
-At minimum, the diagram should show what enters the model, what extra context can be added, whether retrieval exists, whether memory persists, whether tools exist, which downstream systems can be influenced, and where deterministic controls live outside the model.
+At minimum, the diagram should show:
 
-Then push the conversation one step further. Which inputs are untrusted? Which are semi-trusted? Which are treated as policy? What can the model only suggest, and what can it actually trigger?
+- what enters the model
+- what additional context can be added
+- whether retrieval exists
+- whether memory persists
+- whether tools exist
+- which downstream systems can be influenced
+- where deterministic controls live outside the model
+
+Then push the conversation one step further:
+
+- Which inputs are untrusted?
+- Which are semi-trusted?
+- Which are treated as policy?
+- What can the model only suggest?
+- What can it actually trigger?
 
 If the system cannot be drawn clearly, it is probably not understood clearly enough yet. That is not a failure. It is a useful signal.
 
@@ -129,9 +153,9 @@ The most useful thing to understand about GenAI security is that the model is ra
 The real story is the architecture around it:
 
 - what reaches the model
-- what the model can influence
 - what the system treats as trusted
+- what the model can influence
 - where hard controls live
-- and what happens next when the model is wrong
+- what happens next when the model is wrong
 
 > The model generates text. The architecture decides whether that text matters.
