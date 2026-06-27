@@ -1,7 +1,10 @@
 {
   "name": "romanfaeh.com",
   "type": "module",
-  "version": "5.5.1",
+  "version": "6.1.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro check && astro build && pagefind --site dist && cp -r dist/pagefind public/",
@@ -13,6 +16,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@astrojs/mdx": "^7.0.0",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
     "@astrojs/vercel": "^11.0.0",
@@ -20,6 +24,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "dayjs": "^1.11.19",
     "lodash.kebabcase": "^4.1.1",
+    "rehype-callouts": "^2.2.0",
     "remark-collapse": "^0.1.2",
     "remark-toc": "^9.0.0",
     "satori": "^0.18.3",
@@ -36,19 +41,19 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/markdown-remark": "^7.2.0",
-    "@pagefind/default-ui": "^1.4.0",
-    "@shikijs/transformers": "^3.20.0",
+    "@pagefind/default-ui": "^1.5.2",
+    "@shikijs/transformers": "^4.3.0",
     "@tailwindcss/typography": "^0.5.19",
     "@types/lodash.kebabcase": "^4.1.9",
     "@typescript-eslint/parser": "^8.51.0",
     "astro": "^7.0.3",
     "eslint": "^10.1.0",
-    "eslint-plugin-astro": "^1.5.0",
+    "eslint-plugin-astro": "^1.7.0",
     "globals": "^16.5.0",
-    "pagefind": "^1.4.0",
+    "pagefind": "^1.5.2",
     "prettier": "^3.7.4",
     "prettier-plugin-astro": "^0.14.1",
-    "prettier-plugin-tailwindcss": "^0.7.2",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.51.0"
   }

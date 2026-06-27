@@ -1,4 +1,6 @@
 interface Window {
+  __closeLightbox?: (() => void) | null;
+  __lightboxSwapBound?: boolean;
   theme?: {
     themeValue: string;
     setPreference: () => void;
