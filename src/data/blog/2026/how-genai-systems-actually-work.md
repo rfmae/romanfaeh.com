@@ -2,7 +2,6 @@
 title: "How GenAI Systems Actually Work"
 description: "The architecture that matters for security review."
 pubDatetime: 2026-03-25T20:40:00Z
-modDatetime: 2026-06-27T22:15:00Z
 draft: false
 tags:
   - genai
