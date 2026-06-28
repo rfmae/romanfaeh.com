@@ -21,7 +21,7 @@ But in most real systems, the model is only one component.
 
 It sits inside a larger application that decides what reaches it, what context gets added, what tools it can use, and what happens after it produces output.
 
-hat is the more useful place to start.
+That is the more useful place to start.
 
 Viewed that way, the security questions become much clearer. The question is no longer "is the model safe?" in the abstract. The question becomes: how is the system put together, where are the trust boundaries, and what can model output actually change?
 
@@ -67,7 +67,7 @@ A basic LLM application is still primarily text in, text out. The application as
 
 ![RAG System](@/assets/images/2026/how-ai-systems-actually-work/rag-system-nb.png)
 
-A RAG system adds retrieval. The application [retrieves documents, snippets, or records from some external corpus](https://www.pinecone.io/learn/retrieval-augmented-generation/) and includes them in the model input. That changes what the model can **see**. Once retrieval exists, the important questions shift toward provenance, corpus quality, retrieval scope, metadata, and whether retrieved material is being treated as more trustworthy than it deserves.
+A retrieval-augmented generation (RAG) system adds retrieval. The application [retrieves documents, snippets, or records from some external corpus](https://www.pinecone.io/learn/retrieval-augmented-generation/) and includes them in the model input. That changes what the model can **see**. Once retrieval exists, the important questions shift toward provenance, corpus quality, retrieval scope, metadata, and whether retrieved material is being treated as more trustworthy than it deserves.
 
 ![LLM Agent](@/assets/images/2026/how-ai-systems-actually-work/llm-agent-nb.png)
 
