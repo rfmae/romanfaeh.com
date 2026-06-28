@@ -2,7 +2,7 @@ export const SITE = {
   website: "https://romanfaeh.com/",
   author: "Roman Faeh",
   profile: "https://romanfaeh.com/",
-  desc: "This is where I write about AI systems, security, and the engineering decisions that actually hold up.",
+  desc: "Exploring AI security, GenAI systems, and the architecture behind modern AI applications.",
   title: "Roman Faeh",
   ogImage: "",
   lightAndDarkMode: true,
