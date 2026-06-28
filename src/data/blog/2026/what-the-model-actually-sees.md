@@ -18,7 +18,7 @@ The interface makes the interaction look tidy. Your message is a bubble. The ass
 
 The model does not see that interface.
 
-It receives a [sequence of tokens](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) assembled by the application at runtime. ser input, system instructions, conversation history, retrieved documents, memory, tool output, and formatting rules may all become part of that input.
+It receives a [sequence of tokens](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) assembled by the application at runtime. User input, system instructions, conversation history, retrieved documents, memory, tool output, and formatting rules may all become part of that input.
 
 That is why it is misleading to talk about “the prompt” as if it were one thing. In most real systems, the model sees an [assembled context window](https://developers.openai.com/api/docs/guides/text), not a single hand-written instruction. Prompt security is really about how that context gets assembled, ordered, filtered, truncated, and trusted.
 
@@ -135,7 +135,7 @@ Retrieval and memory are context-shaping mechanisms. Their risks go beyond usefu
 
 A retrieved document can function as support, confusion, or hostile instruction depending on what it contains. Memory can preserve helpful state, but it can also preserve bad assumptions or attacker-influenced content. If that content is later reintroduced without re-evaluation, it may arrive carrying more trust than it deserves.
 
-This is why prompt injection and RAG security do not begin at the model. They begin at the context path.
+This is why prompt injection and retrieval-augmented generation (RAG) security do not begin at the model. They begin at the context path.
 
 ## Where to look instead of the prompt
 
