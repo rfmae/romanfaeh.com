@@ -4,10 +4,10 @@ description: "How prompts, instructions, retrieval, and memory become one contex
 pubDatetime: 2026-04-01T20:56:00Z
 draft: false
 tags:
-  - llm
-  - security
+  - genai
+  - ai-security
   - prompts
-  - rag
+  - context
 ---
 
 > **tl;dr:** The application decides what reaches the model. The model sees one assembled context window, not the clean interface the user sees. That is why prompt security starts with context construction, not prompt wording.
@@ -18,7 +18,7 @@ The interface makes the interaction look tidy. Your message is a bubble. The ass
 
 The model does not see that interface.
 
-It receives a [sequence of tokens](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) assembled by the application at runtime. User input, system instructions, conversation history, retrieved documents, memory, tool output, and formatting rules may all be packed into one input. The model only sees whatever text the application chose to place there.
+It receives a [sequence of tokens](https://cookbook.openai.com/examples/how_to_count_tokens_with_tiktoken) assembled by the application at runtime. ser input, system instructions, conversation history, retrieved documents, memory, tool output, and formatting rules may all become part of that input.
 
 That is why it is misleading to talk about “the prompt” as if it were one thing. In most real systems, the model sees an [assembled context window](https://developers.openai.com/api/docs/guides/text), not a single hand-written instruction. Prompt security is really about how that context gets assembled, ordered, filtered, truncated, and trusted.
 
@@ -69,17 +69,17 @@ A simplified version can look like this:
 ]
 ```
 
-This example is simplified. Some systems support multiple system messages. Others do not. The point is not the exact API shape. The point is the layering.
+This example is simplified. The exact API shape varies across systems. The important part is the layering.
 
 That layered reality is much closer to what production systems actually do.
 
-Some things the user sees may never reach the model. Some things the model sees may be invisible to the user. Some things may arrive wrapped in instructions, delimiters, schemas, or metadata that affect how the model interprets them. If a reviewer talks about “the prompt” as though it were just the last user message, they are already looking at the wrong boundary.
+Some things the user sees never reach the model. Other things the model sees are invisible to the user. They may also arrive wrapped in instructions, delimiters, schemas, or metadata that affect how the model interprets them.
 
 That assembled context is the real object under review.
 
 ## The prompt is assembled, not written
 
-In real applications, prompts are not written once and handed to the model. They are assembled dynamically from multiple sources.
+In real applications, prompts are assembled dynamically from multiple sources. They are not written once and handed to the model.
 
 That shifts the important question. It is not only what the instruction says. It is what the application included, in what order, and with what trust assumptions.
 
@@ -93,7 +93,7 @@ Those sources often include:
 - tool outputs from earlier steps
 - structured wrappers that enforce format or schema expectations
 
-Each source is another input shaping the model’s next decision. That is why prompt construction belongs in architecture review.
+Each source shapes what the model sees next. That is why prompt construction belongs in architecture review.
 
 ## Position is a security property
 
@@ -109,7 +109,7 @@ A critical instruction placed early may still be weakened by later conflicting t
 
 This is one reason prompt review often goes wrong. People inspect the instruction they wrote, not the context the model actually received.
 
-If the application truncates context badly, the model may never see the most important rule. If it summarizes aggressively, it may blur the line between trusted policy and untrusted content. If it appends new material carelessly, it may give the newest and least trustworthy input too much influence.
+If the application truncates context badly, the model may never see the most important rule. If it summarizes aggressively, it may blur the line between trusted policy and untrusted content. If it appends new material carelessly, the newest and least trustworthy input may become the most influential.
 
 That is not just prompting. It is context engineering with security consequences.
 
@@ -119,7 +119,7 @@ System prompts matter. They shape how the model interprets the rest of the input
 
 But they are still text in context. They are [not a hard security boundary](https://simonwillison.net/2022/Sep/12/prompt-injection/). They are not a policy engine. They are not a root of trust.
 
-A system prompt can tell the model to ignore malicious content, refuse unsafe actions, or treat some sources as lower trust. That may help. But those instructions still live inside the same context the model is reasoning over. They do not prevent conflict, ambiguity, dilution, or adversarial influence.
+A system prompt can tell the model to ignore malicious content, refuse unsafe actions, or treat some sources as lower trust. That may help. But those instructions still live inside the same context the model is reasoning over. They cannot prevent conflict, ambiguity, dilution, or adversarial influence on their own.
 
 System prompts are one control layer among others. They do not replace validation, authorization, context hygiene, or downstream enforcement.
 
@@ -131,7 +131,7 @@ When it adds memory, it has changed what the model carries forward.
 
 That distinction matters.
 
-Retrieval and memory are context-shaping mechanisms. Their risks are not only about usefulness or answer quality. They are also about provenance, trust, stale data, and which sources the application chooses to privilege.
+Retrieval and memory are context-shaping mechanisms. Their risks go beyond usefulness or answer quality. They also involve provenance, trust, stale data, and which sources the application chooses to privilege.
 
 A retrieved document can function as support, confusion, or hostile instruction depending on what it contains. Memory can preserve helpful state, but it can also preserve bad assumptions or attacker-influenced content. If that content is later reintroduced without re-evaluation, it may arrive carrying more trust than it deserves.
 
