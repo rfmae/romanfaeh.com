@@ -7,7 +7,7 @@ import IconWhatsapp from "@/assets/icons/IconWhatsapp.svg";
 import IconFacebook from "@/assets/icons/IconFacebook.svg";
 import IconTelegram from "@/assets/icons/IconTelegram.svg";
 import IconPinterest from "@/assets/icons/IconPinterest.svg";
-import { SITE } from "@/config";
+import config, { SITE } from "@/config";
 
 interface Social {
   name: string;
@@ -16,68 +16,72 @@ interface Social {
   icon: (_props: Props) => Element;
 }
 
+const ICONS = {
+  facebook: IconFacebook,
+  github: IconGitHub,
+  linkedin: IconLinkedin,
+  mail: IconMail,
+  pinterest: IconPinterest,
+  telegram: IconTelegram,
+  whatsapp: IconWhatsapp,
+  x: IconBrandX,
+} as const;
+
 export const SOCIALS: Social[] = [
-  {
-    name: "GitHub",
-    href: "https://github.com/rfmae",
-    linkTitle: `${SITE.title} on GitHub`,
-    icon: IconGitHub,
-  },
-  // {
-  //   name: "X",
-  //   href: "https://x.com/username",
-  //   linkTitle: `${SITE.title} on X`,
-  //   icon: IconBrandX,
-  // },
-  {
-    name: "LinkedIn",
-    href: "https://www.linkedin.com/in/roman-faeh",
-    linkTitle: `${SITE.title} on LinkedIn`,
-    icon: IconLinkedin,
-  },
-  // {
-  //   name: "Mail",
-  //   href: "mailto:yourmail@gmail.com",
-  //   linkTitle: `Send an email to ${SITE.title}`,
-  //   icon: IconMail,
-  // },
-] as const;
+  ...config.socials.map(social => ({
+    name: formatSocialName(social.name),
+    href: social.url,
+    linkTitle: social.linkTitle ?? getSocialLinkTitle(social.name),
+    icon: getIcon(social.name),
+  })),
+];
 
 export const SHARE_LINKS: Social[] = [
-  {
-    name: "WhatsApp",
-    href: "https://wa.me/?text=",
-    linkTitle: `Share this post via WhatsApp`,
-    icon: IconWhatsapp,
-  },
-  {
-    name: "Facebook",
-    href: "https://www.facebook.com/sharer.php?u=",
-    linkTitle: `Share this post on Facebook`,
-    icon: IconFacebook,
-  },
-  {
-    name: "X",
-    href: "https://x.com/intent/post?url=",
-    linkTitle: `Share this post on X`,
-    icon: IconBrandX,
-  },
-  {
-    name: "Telegram",
-    href: "https://t.me/share/url?url=",
-    linkTitle: `Share this post via Telegram`,
-    icon: IconTelegram,
-  },
-  {
-    name: "Pinterest",
-    href: "https://pinterest.com/pin/create/button/?url=",
-    linkTitle: `Share this post on Pinterest`,
-    icon: IconPinterest,
-  },
-  {
-    name: "Mail",
-    href: "mailto:?subject=See%20this%20post&body=",
-    linkTitle: `Share this post via email`,
-    icon: IconMail,
-  },
-] as const;
+  ...config.shareLinks.map(social => ({
+    name: formatSocialName(social.name),
+    href: social.url,
+    linkTitle: social.linkTitle ?? getShareLinkTitle(social.name),
+    icon: getIcon(social.name),
+  })),
+];
+
+function getIcon(name: string) {
+  const key = name.toLowerCase() as keyof typeof ICONS;
+  const icon = ICONS[key];
+
+  if (!icon) {
+    throw new Error(`Unsupported social icon: ${name}`);
+  }
+
+  return icon;
+}
+
+function formatSocialName(name: string) {
+  if (name.toLowerCase() === "x") return "X";
+
+  return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+function getSocialLinkTitle(name: string) {
+  const formattedName = formatSocialName(name);
+
+  if (name.toLowerCase() === "mail") {
+    return `Send an email to ${SITE.title}`;
+  }
+
+  return `${SITE.title} on ${formattedName}`;
+}
+
+function getShareLinkTitle(name: string) {
+  const formattedName = formatSocialName(name);
+
+  if (name.toLowerCase() === "mail") {
+    return "Share this post via email";
+  }
+
+  if (["telegram", "whatsapp"].includes(name.toLowerCase())) {
+    return `Share this post via ${formattedName}`;
+  }
+
+  return `Share this post on ${formattedName}`;
+}
