@@ -33,7 +33,7 @@ The canonical site URL is `https://romanfaeh.com/`. `vercel.json` configures the
 
 The previous repository used AstroPaper, an Astro Vercel adapter with Web Analytics enabled, Node.js 24 in CI, and both npm and pnpm lockfiles. The relaunch uses Cactus and a single pnpm lockfile. It does not include the previous adapter-based analytics integration.
 
-The Vercel dashboard settings and domain assignment are managed outside this repository. Keep the existing production branch (`master`) and project/domain assignment; `relaunch` is for preparation and, if enabled in Vercel, preview deployments. Publishing to production is a later step. No production merge or deployment is part of this change.
+The GitHub default branch is `main`. Configure the existing Vercel project to use `main` as its production branch and retain the existing project/domain assignment. The previous production commit is preserved in `backup-master`; the remote branches `master` and `relaunch` are retained. Changing the GitHub default branch alone does not verify or configure the Vercel production branch; check the Vercel dashboard separately.
 
 GitHub Actions checks Astro/TypeScript, lint, formatting and the production build on pull requests. It does not publish the site.
 
