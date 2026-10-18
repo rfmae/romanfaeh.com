@@ -1,82 +1,42 @@
-# Roman Faeh's Personal Website
+# romanfaeh.com
 
-This is the source code for my personal website, built with [Astro](https://astro.build) and deployed on [Vercel](https://vercel.com).
+Personal website built with [Astro Cactus](https://github.com/chrismwilliams/astro-theme-cactus), deployed through the existing Vercel project.
 
-## About
+## Local development
 
-This site is my personal home on the web — a place for writing, notes, and blog posts about security, AI, LLM systems, and practical engineering.
+Use Node.js 24 (see `.nvmrc`) and pnpm 12.5.1 (pinned in `package.json`).
 
-## Project Structure
-
-```text
-├── public/                 # Static assets (favicon, OG image, generated search assets)
-├── src/
-│   ├── components/         # Reusable UI components
-│   ├── data/
-│   │   └── blog/           # Blog posts in Markdown, organized by year
-│   ├── layouts/            # Shared page layouts
-│   ├── pages/              # Routes and page files
-│   ├── scripts/            # Client-side scripts
-│   ├── styles/             # Global and typography styles
-│   ├── utils/              # Utility helpers (OG image generation, etc.)
-│   ├── config.ts           # Site metadata and configuration
-│   ├── constants.ts        # Shared constants
-│   ├── content.config.ts   # Astro content collection schema
-│   └── env.d.ts            # Env typing
-├── astro.config.ts         # Astro configuration
-├── eslint.config.js        # Linting configuration
-├── package.json            # Project scripts and dependencies
-├── pnpm-lock.yaml          # Locked dependency versions
-├── tsconfig.json           # TypeScript configuration
-└── LICENSE                 # License for this repository
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm exec astro check
+pnpm build
+pnpm preview
 ```
 
-## Commands
+`pnpm build` generates the static website in `dist/` and runs Pagefind through the `postbuild` script. No environment variables are required. Webmentions are optional; see `.example.env`.
 
-| Command             | Action                                   |
-| :------------------ | :--------------------------------------- |
-| `pnpm install`      | Install dependencies                     |
-| `pnpm dev`          | Start local dev server                   |
-| `pnpm build`        | Run checks and build the production site |
-| `pnpm preview`      | Preview the production build locally     |
-| `pnpm sync`         | Generate Astro types                     |
-| `pnpm lint`         | Run ESLint                               |
-| `pnpm format`       | Format files with Prettier               |
-| `pnpm format:check` | Check formatting                         |
+## Structure and content
 
-## Content
+- `src/site.config.ts`: domain, metadata, navigation and theme settings.
+- `src/pages/`: homepage, about page, blog, notes, tags and feeds.
+- `content/posts/`: new Markdown or MDX blog posts.
+- `content/notes/`: new notes.
+- `content/tags/`: optional tag descriptions.
+- `public/`: favicon and default social card.
 
-Blog posts live in:
-
-```text
-src/data/blog/YYYY/*.md
-```
-
-The site currently includes:
-
-- homepage
-- about page
-- posts index
-- individual post pages
-- tags
-- archives
-- RSS feed
-- search
+The relaunch intentionally starts with empty content collections. No previous blog posts, old article assets, theme demo posts, notes or tag examples are included. Blog and notes indexes show an empty state until content is added.
 
 ## Deployment
 
-This site is deployed on Vercel.
+The canonical site URL is `https://romanfaeh.com/`. `vercel.json` configures the existing Vercel project to install with pnpm, run `pnpm run build`, and serve `dist/` as a static Astro site. A server adapter is unnecessary for these static routes.
 
-Typical flow:
+The previous repository used AstroPaper, an Astro Vercel adapter with Web Analytics enabled, Node.js 24 in CI, and both npm and pnpm lockfiles. The relaunch uses Cactus and a single pnpm lockfile. It does not include the previous adapter-based analytics integration.
 
-1. push changes to GitHub
-2. Vercel pulls the repository
-3. Vercel builds and deploys the site
+The Vercel dashboard settings and domain assignment are managed outside this repository. Keep the existing production branch (`master`) and project/domain assignment; `relaunch` is for preparation and, if enabled in Vercel, preview deployments. Publishing to production is a later step. No production merge or deployment is part of this change.
 
-## Notes
+GitHub Actions checks Astro/TypeScript, lint, formatting and the production build on pull requests. It does not publish the site.
 
-This repo started from the [AstroPaper](https://github.com/satnaing/astro-paper) theme and has been adapted into a personal site.
+## Theme source and license
 
-## License
-
-See [LICENSE](LICENSE).
+Based on Cactus v8.3.0, upstream commit `728f1f4eeb80208398649261d7635f311cafa011`. The theme's MIT license is retained in `LICENSE`.
