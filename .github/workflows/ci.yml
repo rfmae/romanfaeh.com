@@ -4,50 +4,39 @@ permissions:
   contents: read
 
 on:
+  push:
+    branches: [main]
   pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-      - reopened
-  workflow_call:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  build:
-    name: Code standards & build
+  website-quality:
+    name: Website quality
     runs-on: ubuntu-latest
-    timeout-minutes: 3
-
-    strategy:
-      matrix:
-        node-version: [24]
+    timeout-minutes: 10
 
     steps:
-      - name: "☁️ Checkout repository"
+      - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: "📦 Install pnpm"
+      - name: Install pnpm from package.json
         uses: pnpm/action-setup@v5
-        with:
-          version: 12.5.1
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js from .nvmrc
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
+          node-version-file: .nvmrc
+          cache: pnpm
 
-      - name: "📦 Install dependencies"
+      - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: "🔎 Check Astro and TypeScript"
-        run: pnpm exec astro check
+      - name: Check Astro, TypeScript and lint
+        run: pnpm run check
 
-      - name: "🔎 Lint code"
-        run: pnpm run lint
-
-      - name: "📝 Checking code format"
+      - name: Check formatting
         run: pnpm run format:check
 
-      - name: "🚀 Build the project"
+      - name: Build website and search index
         run: pnpm run build
